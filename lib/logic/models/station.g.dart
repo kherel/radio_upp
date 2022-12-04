@@ -8,7 +8,7 @@ part of 'station.dart';
 
 Station _$StationFromJson(Map<String, dynamic> json) => Station(
       id: json['i'] as String,
-      name: json['name'] as String,
+      name: json['n'] as String,
       genre: Serialization.genreFromString(json['d'] as String),
       country: $enumDecode(_$CountryEnumMap, json['c']),
       logoUrl: json['l'] as String,
@@ -17,7 +17,7 @@ Station _$StationFromJson(Map<String, dynamic> json) => Station(
 
 Map<String, dynamic> _$StationToJson(Station instance) => <String, dynamic>{
       'i': instance.id,
-      'name': instance.name,
+      'n': instance.name,
       'd': Serialization.stringIdFromGenre(instance.genre),
       'c': _$CountryEnumMap[instance.country]!,
       'l': instance.logoUrl,

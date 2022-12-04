@@ -11,7 +11,7 @@ part 'station.g.dart';
 class Station extends Equatable {
   @JsonKey(name: 'i')
   final String id;
-  @JsonKey(name: 'name')
+  @JsonKey(name: 'n')
   final String name;
   @JsonKey(
     name: 'd',

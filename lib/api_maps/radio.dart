@@ -24,13 +24,16 @@ class RadioApi extends RapidApi {
       queryParameters: {
         'genre': genre?.id ?? 'ALL',
         'country': country?.name ?? 'ALL',
+        'search_keyword': 'ALL'
       },
     );
     client.close();
 
-    return (res.data['results'] as List)
-        .map<Station>((json) => Station.fromJson(json))
-        .toList();
+    print('res.data: ${res.data}');
+    return (res.data['results'] as List).map<Station>((json) {
+      print(json);
+      return Station.fromJson(json);
+    }).toList();
   }
 
   @override

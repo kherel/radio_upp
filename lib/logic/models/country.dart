@@ -138,7 +138,7 @@ enum Country {
 }
 
 extension CountriesExt on Country {
-  String get name {
+  String get title {
     switch (this) {
       case Country.AF:
         return "Afghanistan";
