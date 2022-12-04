@@ -1,20 +1,178 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:radio_upp/config/brand_colors.dart';
 
-class Logo extends StatelessWidget {
+class Logo extends StatefulWidget {
   const Logo({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return CustomPaint(
-      // size: const Size(158, 22),
-      size: const Size(300, 40),
-      painter: LogoPainter(),
+  State<Logo> createState() => _LogoState();
+}
+
+class _LogoState extends State<Logo> with SingleTickerProviderStateMixin {
+  late AnimationController controller;
+
+  late Animation<Color?> strokeColor;
+  late Animation<Color?> bluredStokeColor;
+  late Animation<double?> bluredStokeOpacity;
+
+  late Timer timer;
+  final random = Random();
+  @override
+  void dispose() {
+    timer.cancel();
+    controller.dispose();
+    super.dispose();
+  }
+
+  void _initTimer() {
+    timer = Timer(
+      Duration(seconds: 5 + random.nextInt(10)),
+      _initTimer,
     );
+    controller.forward(from: 0);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    );
+
+    strokeColor = TweenSequence<Color?>([
+      TweenSequenceItem<Color?>(
+        tween: ColorTween(
+          begin: BrandColors.darkGreen,
+          end: BrandColors.lightGreen,
+        ),
+        weight: 10,
+      ),
+      TweenSequenceItem<Color?>(
+        tween: ColorTween(
+          begin: BrandColors.lightGreen,
+          end: BrandColors.darkGreen,
+        ),
+        weight: 4,
+      ),
+      TweenSequenceItem<Color?>(
+        tween: ColorTween(
+          begin: BrandColors.darkGreen,
+          end: BrandColors.secondaryBlack,
+        ),
+        weight: 1,
+      ),
+      TweenSequenceItem<Color?>(
+        tween: ColorTween(
+          begin: BrandColors.secondaryBlack,
+          end: BrandColors.darkGreen,
+        ),
+        weight: 1,
+      ),
+    ]).animate(controller);
+
+    bluredStokeColor = TweenSequence<Color?>([
+      TweenSequenceItem<Color?>(
+        tween: ColorTween(
+          begin: BrandColors.darkGreen,
+          end: BrandColors.middleGreen,
+        ),
+        weight: 10,
+      ),
+      TweenSequenceItem<Color?>(
+        tween: ColorTween(
+          begin: BrandColors.middleGreen,
+          end: BrandColors.darkGreen,
+        ),
+        weight: 4,
+      ),
+      TweenSequenceItem<Color?>(
+        tween: ColorTween(
+          begin: BrandColors.darkGreen,
+          end: BrandColors.secondaryBlack,
+        ),
+        weight: 1,
+      ),
+      TweenSequenceItem<Color?>(
+        tween: ColorTween(
+          begin: BrandColors.secondaryBlack,
+          end: BrandColors.darkGreen,
+        ),
+        weight: 1,
+      ),
+    ]).animate(controller);
+
+    bluredStokeOpacity = TweenSequence<double?>([
+      TweenSequenceItem<double?>(
+        tween: Tween<double>(
+          begin: 0.8,
+          end: 1,
+        ),
+        weight: 4,
+      ),
+      TweenSequenceItem<double?>(
+        tween: Tween<double>(
+          begin: 1,
+          end: 0.6,
+        ),
+        weight: 3,
+      ),
+      TweenSequenceItem<double?>(
+        tween: Tween<double>(
+          begin: 0.6,
+          end: 0,
+        ),
+        weight: 1,
+      ),
+      TweenSequenceItem<double?>(
+        tween: Tween<double>(
+          begin: 0,
+          end: 0.8,
+        ),
+        weight: 1,
+      ),
+    ]).animate(controller);
+    _initTimer();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+        animation: controller,
+        builder: (context, snapshot) {
+          var bluredColorOpacity = bluredStokeOpacity.value ?? 0.8;
+          return CustomPaint(
+            size: const Size(158, 22),
+            painter: LogoPainter(
+              strokeColor: strokeColor.value ?? BrandColors.darkGreen,
+              bluredStokeColor: bluredStokeColor.value ?? BrandColors.darkGreen,
+              bluredStokeOpacity: bluredColorOpacity,
+              shadowbluredStokeOpacity: Tween<double>(
+                begin: 0.8,
+                end: 1,
+              ).transform(bluredColorOpacity),
+            ),
+          );
+        });
   }
 }
 
 class LogoPainter extends CustomPainter {
+  const LogoPainter({
+    required this.strokeColor,
+    required this.bluredStokeColor,
+    required this.bluredStokeOpacity,
+    required this.shadowbluredStokeOpacity,
+  });
+
+  final Color strokeColor;
+  final Color bluredStokeColor;
+  final double bluredStokeOpacity;
+  final double shadowbluredStokeOpacity;
   @override
   void paint(Canvas canvas, Size size) {
     var pathOne = getPathOne(size);
@@ -35,18 +193,25 @@ class LogoPainter extends CustomPainter {
   }
 
   void drawNeon(Canvas canvas, List<Path> paths) {
-    var paint = Paint()
+    var strokePaint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.5
-      ..color = BrandColors.green;
-    for (var path in paths) {
-      canvas.drawPath(path, paint);
-      canvas.save();
-      canvas.translate(0, -1);
-      canvas.drawShadow(path, BrandColors.green, 1, false);
-      // canvas.translate(0, -13);
-      // canvas.drawShadow(path, BrandColors.green, 10, false);
+      ..color = strokeColor;
 
+    var wallLight1 = bluredStokeColor.withOpacity(bluredStokeOpacity);
+    var wallLight2 = bluredStokeColor.withOpacity(shadowbluredStokeOpacity);
+    
+    var bluredPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..color = wallLight1
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1.0);
+    for (var path in paths) {
+      canvas.drawPath(path, strokePaint);
+      canvas.drawPath(path, bluredPaint);
+      canvas.save();
+      canvas.translate(0, -13);
+      canvas.drawShadow(path, wallLight2, 10, false);
       canvas.restore();
     }
   }
@@ -501,16 +666,15 @@ class LogoPainter extends CustomPainter {
   }
 }
 
-
-    // var paint = Paint()
-    //   ..style = PaintingStyle.stroke
-    //   ..strokeWidth = 0.5
-    //   ..color = BrandColors.green
-    //   ..strokeJoin = StrokeJoin.round;
-    // canvas.drawShadow(
-    //   path,
-    //   BrandColors.green.withAlpha(255),
-    //   5,
-    //   true,
-    // );
-    // canvas.drawPath(path, paint);
+// var paint = Paint()
+//   ..style = PaintingStyle.stroke
+//   ..strokeWidth = 0.5
+//   ..color = BrandColors.green
+//   ..strokeJoin = StrokeJoin.round;
+// canvas.drawShadow(
+//   path,
+//   BrandColors.green.withAlpha(255),
+//   5,
+//   true,
+// );
+// canvas.drawPath(path, paint);
