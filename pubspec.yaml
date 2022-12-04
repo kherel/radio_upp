@@ -10,6 +10,7 @@ environment:
 dependencies:
   bloc: 8.1.0
   cupertino_icons: 1.0.2
+  dart_ipify: 1.1.1
   dio: 4.0.6
   equatable: 2.0.5
   flutter:
@@ -20,6 +21,7 @@ dependencies:
   hive: 2.2.3
   hive_flutter: 1.1.0
   json_annotation: 4.7.0
+  pretty_dio_logger: 1.2.0-beta-1
   provider: 6.0.4
 
 dev_dependencies:
@@ -34,7 +36,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/genres
+    - assets/images/genres/
   fonts:
     - family: Bossa
       fonts:
@@ -46,4 +48,3 @@ flutter:
           weight: 500
         - asset: assets/fonts/gilroy/Gilroy-Bold.ttf
           weight: 700
-
