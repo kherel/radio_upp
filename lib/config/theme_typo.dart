@@ -23,6 +23,15 @@ class ThemeTypo {
     color: BrandColors.white,
   );
 
+  static const regular = TextStyle(
+    fontFamily: gilroy,
+    fontWeight: NamedWeight.medium,
+    fontSize: 16,
+    height: 18.83 / 16,
+    letterSpacing: 1.3,
+    color: BrandColors.grey,
+  );
+
   static const basis = TextStyle(
     fontFamily: gilroy,
     fontWeight: NamedWeight.bold,
