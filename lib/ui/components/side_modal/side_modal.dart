@@ -224,74 +224,101 @@ class InnerCard extends StatelessWidget {
   });
 
   final Station station;
+
+  VoidCallback? genOnTap(RadioCubit cubit, StationStatus status) {
+    switch (status) {
+      case StationStatus.canPlay:
+        return () => cubit.play(station);
+      case StationStatus.canPause:
+        return () => cubit.pause();
+      case StationStatus.error:
+        return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var cubit = context.watch<RadioCubit>();
-    return Container(
-      height: 110,
-      padding: const EdgeInsets.fromLTRB(0.5, 0.5, 0, 0.5),
-      decoration: BoxDecoration(
-        gradient: BrandColors.greyGradient,
-        borderRadius: const BorderRadius.horizontal(
-          left: Radius.circular(30),
-        ),
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(15),
-        decoration: const BoxDecoration(
-          gradient: BrandColors.blueGradient,
-          borderRadius: BorderRadius.horizontal(
-            left: Radius.circular(30),
+    var status = cubit.state.checkButtonState(station);
+    return GestureDetector(
+      onTap: genOnTap(cubit, status),
+      child: ClipRRect(
+        borderRadius: BorderRadius.horizontal(
+          left: Radius.circular(
+            status == StationStatus.error ? 31 : 30,
           ),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(21),
-              child: CachedNetworkImage(
-                width: 80,
-                height: 80,
-                fit: BoxFit.cover,
-                imageUrl:
-                    'https://www.radioair.info/images_radios/${station.logoUrl}',
-                placeholder: (context, url) => const BrandLoader(),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
+        child: ColorFiltered(
+          colorFilter: ColorFilter.mode(
+            status == StationStatus.error
+                ? Colors.black.withOpacity(0.3)
+                : Colors.transparent,
+            BlendMode.darken,
+          ),
+          child: Container(
+            height: 110,
+            padding: const EdgeInsets.fromLTRB(0.5, 0.5, 0, 0.5),
+            decoration: BoxDecoration(
+              gradient: BrandColors.greyGradient,
+              borderRadius: const BorderRadius.horizontal(
+                left: Radius.circular(30),
               ),
             ),
-            const SizedBox(width: 13),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            child: Container(
+              padding: const EdgeInsets.all(15),
+              decoration: const BoxDecoration(
+                gradient: BrandColors.blueGradient,
+                borderRadius: BorderRadius.horizontal(
+                  left: Radius.circular(30),
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 5),
-                  Text(
-                    station.country?.title ?? '',
-                    style: ThemeTypo.h5,
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(21),
+                    child: CachedNetworkImage(
+                      width: 80,
+                      height: 80,
+                      fit: BoxFit.cover,
+                      imageUrl:
+                          'https://www.radioair.info/images_radios/${station.logoUrl}',
+                      placeholder: (context, url) => const BrandLoader(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                    ),
                   ),
-                  const Spacer(),
-                  Text(
-                    station.name,
-                    style: ThemeTypo.basis,
-                    maxLines: 2,
+                  const SizedBox(width: 13),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 5),
+                        Text(
+                          station.country?.title ?? '',
+                          style: ThemeTypo.h5,
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                        ),
+                        const Spacer(),
+                        Text(
+                          station.name,
+                          style: ThemeTypo.basis,
+                          maxLines: 2,
+                        ),
+                        const Spacer(),
+                        if (station.genre != null)
+                          GenreLabel(genre: station.genre!),
+                      ],
+                    ),
                   ),
-                  const Spacer(),
-                  if (station.genre != null) GenreLabel(genre: station.genre!),
+                  PlayButton(status: status),
                 ],
               ),
             ),
-            PlayButton(
-              status: cubit.state.checkButtonState(station),
-              onTap: () => cubit.state.checkButtonState(station) ==
-                      StationStatus.canPause
-                  ? cubit.pause()
-                  : cubit.play(station),
-            ),
-          ],
+          ),
         ),
       ),
     );

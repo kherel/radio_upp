@@ -7,11 +7,9 @@ class PlayButton extends StatelessWidget {
   const PlayButton({
     Key? key,
     required this.status,
-    required this.onTap,
   }) : super(key: key);
 
   final StationStatus status;
-  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -41,42 +39,39 @@ class PlayButton extends StatelessWidget {
         break;
     }
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Stack(
-        children: [
-          if (isGlowing)
-            Positioned(
-              bottom: 1,
-              child: Container(
-                width: 30,
-                height: 30,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: BrandColors.darkGreen.withOpacity(0.8),
-                      blurRadius: 25,
-                    ),
-                  ],
-                ),
+    return Stack(
+      children: [
+        if (isGlowing)
+          Positioned(
+            bottom: 1,
+            child: Container(
+              width: 30,
+              height: 30,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: BrandColors.darkGreen.withOpacity(0.8),
+                    blurRadius: 25,
+                  ),
+                ],
               ),
             ),
-          Container(
-            height: 40,
-            width: 40,
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              icon,
-              size: 25,
-              color: iconsColor,
-            ),
           ),
-        ],
-      ),
+        Container(
+          height: 40,
+          width: 40,
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            icon,
+            size: 25,
+            color: iconsColor,
+          ),
+        ),
+      ],
     );
   }
 }
