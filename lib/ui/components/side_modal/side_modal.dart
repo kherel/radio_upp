@@ -225,23 +225,12 @@ class InnerCard extends StatelessWidget {
 
   final Station station;
 
-  VoidCallback? genOnTap(RadioCubit cubit, StationStatus status) {
-    switch (status) {
-      case StationStatus.canPlay:
-        return () => cubit.play(station);
-      case StationStatus.canPause:
-        return () => cubit.pause();
-      case StationStatus.error:
-        return null;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     var cubit = context.watch<RadioCubit>();
     var status = cubit.state.checkButtonState(station);
     return GestureDetector(
-      onTap: genOnTap(cubit, status),
+      onTap: cubit.getActionByStatus(status, station),
       child: ClipRRect(
         borderRadius: BorderRadius.horizontal(
           left: Radius.circular(

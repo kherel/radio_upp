@@ -8,15 +8,15 @@ enum Country {
   // AL,
   // AM,
   // AO,
-  AR,
-  AT,
+  // AR,
+  // AT,
   AU,
   // AW,
   // AZ,
   // BA,
   // BD,
   BE,
-  BG,
+  // BG,
   // BI,
   // BJ,
   // BM,
@@ -133,7 +133,7 @@ enum Country {
   // VC,
   VE,
   // VN,
-  ZA,
+  // ZA,
   // ZW,
 }
 
@@ -154,10 +154,10 @@ extension CountriesExt on Country {
       //   return "Armenia";
       // case Country.AO:
       //   return "Angola";
-      case Country.AR:
-        return "Argentina";
-      case Country.AT:
-        return "Austria";
+      // case Country.AR:
+      //   return "Argentina";
+      // case Country.AT:
+      //   return "Austria";
       case Country.AU:
         return "Australia";
       // case Country.AW:
@@ -170,8 +170,8 @@ extension CountriesExt on Country {
       //   return "Bangladesh";
       case Country.BE:
         return "Belgium";
-      case Country.BG:
-        return "Bulgaria";
+      // case Country.BG:
+      //   return "Bulgaria";
       // case Country.BI:
       //   return "Burundi";
       // case Country.BJ:
@@ -404,8 +404,8 @@ extension CountriesExt on Country {
         return "Venezuela";
       // case Country.VN:
       //   return "Vietnam";
-      case Country.ZA:
-        return "South Africa";
+      // case Country.ZA:
+      //   return "South Africa";
       // case Country.ZW:
       //   return "Zimbabwe";
     }

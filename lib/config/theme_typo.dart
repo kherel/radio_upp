@@ -23,13 +23,21 @@ class ThemeTypo {
     color: BrandColors.white,
   );
 
+  static const superSmall = TextStyle(
+    fontFamily: gilroy,
+    fontWeight: NamedWeight.medium,
+    fontSize: 11,
+    height: 1.2,
+    color: BrandColors.lightGrey,
+  );
+
   static const regular = TextStyle(
     fontFamily: gilroy,
     fontWeight: NamedWeight.medium,
     fontSize: 16,
     height: 18.83 / 16,
     letterSpacing: 1.3,
-    color: BrandColors.grey,
+    color: BrandColors.darkGrey,
   );
 
   static const basis = TextStyle(
@@ -46,6 +54,6 @@ class ThemeTypo {
     fontSize: 11,
     height: 12.95 / 11,
     letterSpacing: 1.3,
-    color: BrandColors.grey,
+    color: BrandColors.darkGrey,
   );
 }

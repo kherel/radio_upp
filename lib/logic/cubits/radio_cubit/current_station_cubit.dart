@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:radio_upp/logic/models/station.dart';
 import 'package:audio_session/audio_session.dart';
@@ -36,7 +37,19 @@ class RadioCubit extends Cubit<RadioCubitState> {
   @override
   Future<void> close() async {
     super.close();
+    player.dispose();
     playerStateStream?.cancel();
+  }
+
+  VoidCallback? getActionByStatus(StationStatus status, Station station) {
+    switch (status) {
+      case StationStatus.canPlay:
+        return () => play(station);
+      case StationStatus.canPause:
+        return pause;
+      case StationStatus.error:
+        return null;
+    }
   }
 
   Future<void> init() async {
@@ -58,6 +71,7 @@ class RadioCubit extends Cubit<RadioCubitState> {
   }
 
   void play(Station station) async {
+    print('click on ${station.id}');
     var isStoped = state is RadioCubitStopped;
     var isNewStation = (state is RadioCubitStateWithStation) &&
         (state as RadioCubitStateWithStation).station != station;
@@ -74,6 +88,7 @@ class RadioCubit extends Cubit<RadioCubitState> {
 
       try {
         var audioSourse = AudioSource.uri(Uri.parse(station.streamURl));
+// player player
 
         await player.setAudioSource(audioSourse);
       } catch (e) {

@@ -32,9 +32,10 @@ class RadioApi extends RapidApi {
     if (res.data is List) {
       return [];
     }
-    return (res.data['results'] as List).map<Station>((json) {
-      return Station.fromJson(json);
-    }).toList();
+    return (res.data['results'] as List)
+        .where((element) => !spaniBadStations.contains(element['i']))
+        .map<Station>((json) => Station.fromJson(json))
+        .toList();
   }
 
   @override
@@ -48,3 +49,16 @@ class RadioApi extends RapidApi {
     return options;
   }
 }
+
+const spaniBadStations = [
+  '14532',
+  '14505',
+  '14474',
+  '14441',
+  '14644',
+  '14669',
+  '14747',
+  '14748',
+  '15132',
+  '15254',
+];

@@ -17,6 +17,7 @@ import 'package:radio_upp/ui/components/brand_loader/brand_loader.dart';
 import 'package:radio_upp/ui/components/brand_titles/brand_titles.dart';
 import 'package:radio_upp/ui/components/genre_label/genre_label.dart';
 import 'package:radio_upp/ui/components/header/header.dart';
+import 'package:radio_upp/ui/components/player/player.dart';
 import 'package:radio_upp/ui/components/side_modal/side_modal.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -69,6 +70,8 @@ class _DashboardState extends State<Dashboard> {
         }
       },
       child: Scaffold(
+        extendBody: true,
+        bottomNavigationBar: const Player(),
         body: CustomScrollView(
           controller: scrollController,
           slivers: [

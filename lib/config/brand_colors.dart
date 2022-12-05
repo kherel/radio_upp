@@ -12,7 +12,8 @@ class BrandColors {
   static const Color red = Color(0xFFFD0707);
 
   static const Color blue = Color(0xFF2F8396);
-  static const Color grey = Color(0xFF455060);
+  static const Color darkGrey = Color(0xFF455060);
+  static const Color lightGrey = Color(0xFF9FA6B0);
 
   static const Color white = Colors.white;
 
