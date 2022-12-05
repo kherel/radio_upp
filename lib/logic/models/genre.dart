@@ -437,7 +437,7 @@ var names = {
   // 89: "Health",
   90: "Heavy Metal",
   92: "Hip Hop",
-  // 93: "Hits",
+  93: "Hits",
   95: "Hot AC",
   96: "House",
   98: "Indie",

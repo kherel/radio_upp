@@ -9,6 +9,7 @@ import 'package:radio_upp/logic/get_it/navigator.dart';
 import 'package:radio_upp/ui/components/brand_system_overlay/brand_system_overlay.dart';
 
 void main() async {
+  Paint.enableDithering = true;
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterConfig.loadEnvVariables();
   await HiveConfig().init();

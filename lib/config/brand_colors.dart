@@ -19,13 +19,24 @@ class BrandColors {
   static const blackGradient = LinearGradient(
     begin: Alignment(0.3, -1),
     end: Alignment.bottomCenter,
+    colors: [Color(0xFF2D3139), Color(0xFF1F222A)],
+  );
+
+  static const blueGradient = LinearGradient(
+    begin: Alignment(0.1, -0.9),
+    end: Alignment.bottomCenter,
     colors: [
-      Color(
-        0xFF2D3139,
-      ),
-      Color(
-        0xFF1F222A,
-      )
+      Color(0xFF2D3139),
+      Color(0xFF1F222A),
+    ],
+  );
+
+  static final greyGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [
+      const Color(0xFF595A61),
+      const Color(0xFF595A61).withOpacity(0),
     ],
   );
 }
