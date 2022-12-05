@@ -13,10 +13,9 @@ class BlocAndProviderConfig extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var cubit = LocalStationsCubit()..init();
     return MultiProvider(
       providers: [
-        BlocProvider(create: (_) => cubit),
+        BlocProvider(create: (_) => LocalStationsCubit()..init()),
       ],
       child: child,
     );

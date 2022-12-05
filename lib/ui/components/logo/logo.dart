@@ -5,7 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:radio_upp/config/brand_colors.dart';
 
 class Logo extends StatefulWidget {
-  const Logo({super.key});
+  const Logo.small({super.key})
+      : size = const Size(158, 22),
+        hasRandomPeriodicTimer = true;
+
+  const Logo.big({super.key})
+      : size = const Size(214, 30),
+        hasRandomPeriodicTimer = false;
+
+  final Size size;
+  final bool hasRandomPeriodicTimer;
 
   @override
   State<Logo> createState() => _LogoState();
@@ -18,22 +27,22 @@ class _LogoState extends State<Logo> with SingleTickerProviderStateMixin {
   late Animation<Color?> bluredStokeColor;
   late Animation<double?> bluredStokeOpacity;
 
-  late Timer timer;
+  Timer? timer;
   final random = Random();
+
   @override
   void dispose() {
-    timer.cancel();
-    controller.dispose();
     super.dispose();
+    timer?.cancel();
+    controller.dispose();
   }
 
   void _initTimer() {
-    timer = Timer(
-      Duration(seconds: 5 + random.nextInt(10)),
-      _initTimer,
-    );
+    timer = Timer(genRandomDuration(), _initTimer);
     controller.forward(from: 0);
   }
+
+  Duration genRandomDuration() => Duration(seconds: 5 + random.nextInt(10));
 
   @override
   void initState() {
@@ -136,7 +145,12 @@ class _LogoState extends State<Logo> with SingleTickerProviderStateMixin {
         weight: 1,
       ),
     ]).animate(controller);
-    _initTimer();
+
+    if (widget.hasRandomPeriodicTimer) {
+      timer = Timer(genRandomDuration(), _initTimer);
+    } else {
+      controller.forward();
+    }
   }
 
   @override
@@ -200,7 +214,7 @@ class LogoPainter extends CustomPainter {
 
     var wallLight1 = bluredStokeColor.withOpacity(bluredStokeOpacity);
     var wallLight2 = bluredStokeColor.withOpacity(shadowbluredStokeOpacity);
-    
+
     var bluredPaint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1

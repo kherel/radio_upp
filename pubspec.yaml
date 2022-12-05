@@ -8,7 +8,11 @@ environment:
   sdk: '>=2.18.2 <3.0.0'
 
 dependencies:
+  auto_animated: 3.1.0
+  auto_size_text: 3.0.0
   bloc: 8.1.0
+  cached_network_image: ^3.2.3
+  change_case: 1.0.2
   cupertino_icons: 1.0.2
   dart_ipify: 1.1.1
   dio: 4.0.6
@@ -20,9 +24,11 @@ dependencies:
   get_it: 7.2.0
   hive: 2.2.3
   hive_flutter: 1.1.0
+  infinite_listview: 1.1.0
   json_annotation: 4.7.0
   pretty_dio_logger: 1.2.0-beta-1
   provider: 6.0.4
+  shimmer: ^2.0.0
 
 dev_dependencies:
   build_runner: 2.3.2
@@ -48,3 +54,6 @@ flutter:
           weight: 500
         - asset: assets/fonts/gilroy/Gilroy-Bold.ttf
           weight: 700
+    - family: BrandIcons
+      fonts:
+        - asset: assets/fonts/brand_icons/BrandIcons.ttf

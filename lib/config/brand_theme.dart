@@ -6,3 +6,4 @@ final brandTheme = ThemeData(
   brightness: Brightness.dark,
   scaffoldBackgroundColor: BrandColors.primaryBlack,
 );
+
