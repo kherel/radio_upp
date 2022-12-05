@@ -18,6 +18,7 @@ import 'package:radio_upp/ui/components/brand_titles/brand_titles.dart';
 import 'package:radio_upp/ui/components/genre_label/genre_label.dart';
 import 'package:radio_upp/ui/components/header/header.dart';
 import 'package:radio_upp/ui/components/side_modal/side_modal.dart';
+import 'package:shimmer/shimmer.dart';
 
 part 'genres.dart';
 part 'local.dart';
@@ -54,15 +55,17 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
+    var cubit = context.watch<SearchCubit>();
+
     return BlocListener<SearchCubit, SearchState>(
       listener: (context, state) {
         if (state is StationsLoaded) {
-          if (state.stations.isEmpty) {
-            print(state.genre);
-            print(state.country);
-          } else {
-            BrandModal.openModal(state.stations);
-          }
+          var title = state.genre?.name ?? state.country?.title;
+
+          BrandModal.openModal(
+            state.stations,
+            title: title!,
+          );
         }
       },
       child: Scaffold(
@@ -81,42 +84,50 @@ class _DashboardState extends State<Dashboard> {
               itemCount: 5,
               itemBuilder: buildAnimatedItem,
             ),
-            _bouldCountryList()
+            _bouldCountryList(cubit)
           ],
         ),
       ),
     );
   }
 
-  SliverList _bouldCountryList() {
+  SliverList _bouldCountryList(SearchCubit cubit) {
+    var state = cubit.state;
+
     return SliverList(
       delegate: SliverChildListDelegate(
-        Country.values
-            .map((e) => GestureDetector(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 5),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Container(
-                          width: 56,
-                          padding: const EdgeInsets.only(bottom: 2),
-                          alignment: Alignment.centerRight,
-                          child: const Text(
-                            '33',
-                            style: ThemeTypo.regular,
-                          ),
-                        ),
-                        const SizedBox(width: 11),
-                        Text(
-                          e.title,
-                          style: ThemeTypo.h2,
-                        ),
-                      ],
-                    ),
-                  ),
-                ))
-            .toList(),
+        [
+          ...Country.values.map((c) {
+            var isLoading = state is StationsLoading && state.country == c;
+            var child = Text(
+              c.title,
+              style: ThemeTypo.h2,
+            );
+            return GestureDetector(
+              onTap: () {
+                cubit.search(country: c);
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: Container(
+                  width: 56,
+                  padding: const EdgeInsets.only(bottom: 2),
+                  alignment: Alignment.center,
+                  child: isLoading
+                      ? Shimmer.fromColors(
+                          baseColor: BrandColors.white,
+                          highlightColor: BrandColors.darkGreen,
+                          child: child,
+                        )
+                      : child,
+                ),
+              ),
+            );
+          }),
+          SizedBox(
+            height: MediaQuery.of(context).padding.bottom + 10,
+          )
+        ],
       ),
     );
   }

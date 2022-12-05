@@ -39,4 +39,13 @@ class ThemeTypo {
     height: 19 / 15,
     color: BrandColors.white,
   );
+
+  static const h5 = TextStyle(
+    fontFamily: gilroy,
+    fontWeight: NamedWeight.medium,
+    fontSize: 11,
+    height: 12.95 / 11,
+    letterSpacing: 1.3,
+    color: BrandColors.grey,
+  );
 }

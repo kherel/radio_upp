@@ -11,7 +11,7 @@
 ///      fonts:
 ///       - asset: fonts/BrandIcons.ttf
 ///
-/// 
+///
 ///
 import 'package:flutter/widgets.dart';
 
@@ -21,5 +21,12 @@ class BrandIcons {
   static const _kFontFam = 'BrandIcons';
   static const String? _kFontPkg = null;
 
-  static const IconData flash = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData flash =
+      IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData close =
+      IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData play =
+      IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData pause =
+      IconData(0xe805, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

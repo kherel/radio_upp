@@ -11,7 +11,7 @@ dependencies:
   auto_animated: 3.1.0
   auto_size_text: 3.0.0
   bloc: 8.1.0
-  cached_network_image: ^3.2.3
+  cached_network_image: 3.2.3
   change_case: 1.0.2
   cupertino_icons: 1.0.2
   dart_ipify: 1.1.1
@@ -21,6 +21,7 @@ dependencies:
     sdk: flutter
   flutter_bloc: 8.1.1
   flutter_config: 2.0.0
+  just_audio: 0.9.30
   get_it: 7.2.0
   hive: 2.2.3
   hive_flutter: 1.1.0
