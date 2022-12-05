@@ -2,17 +2,18 @@ import 'dart:ui' as ui;
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:radio_upp/config/brand_colors.dart';
 import 'package:radio_upp/config/get_it_config.dart';
 import 'package:radio_upp/config/theme_typo.dart';
+import 'package:radio_upp/logic/cubits/radio_cubit/current_station_cubit.dart';
 import 'package:radio_upp/logic/get_it/navigator.dart';
 import 'package:radio_upp/logic/models/country.dart';
 import 'package:radio_upp/logic/models/station.dart';
 import 'package:radio_upp/ui/components/brand_icons/brand_icons.dart';
 import 'package:radio_upp/ui/components/genre_label/genre_label.dart';
 import 'package:radio_upp/ui/components/play_button/play_button.dart';
-import 'package:radio_upp/ui/components/side_modal/cc.dart';
 
 import '../brand_loader/brand_loader.dart';
 
@@ -159,7 +160,7 @@ class _SelectStationsState extends State<SelectStations>
   }
 }
 
-class _StationCard extends StatefulWidget {
+class _StationCard extends StatelessWidget {
   const _StationCard({
     Key? key,
     required this.station,
@@ -168,31 +169,11 @@ class _StationCard extends StatefulWidget {
   final Station station;
 
   @override
-  State<_StationCard> createState() => _StationCardState();
-}
-
-class _StationCardState extends State<_StationCard> {
-  // late final PageManager _pageManager;
-
-  @override
-  void initState() {
-    // _pageManager = PageManager(widget.station.streamURl);
-
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    // _pageManager.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return SliverPersistentHeader(
       pinned: false,
       delegate: _StationCardDelegate(
-        station: widget.station,
+        station: station,
       ),
     );
   }
@@ -245,6 +226,7 @@ class InnerCard extends StatelessWidget {
   final Station station;
   @override
   Widget build(BuildContext context) {
+    var cubit = context.watch<RadioCubit>();
     return Container(
       height: 110,
       padding: const EdgeInsets.fromLTRB(0.5, 0.5, 0, 0.5),
@@ -301,6 +283,13 @@ class InnerCard extends StatelessWidget {
                   if (station.genre != null) GenreLabel(genre: station.genre!),
                 ],
               ),
+            ),
+            PlayButton(
+              status: cubit.state.checkButtonState(station),
+              onTap: () => cubit.state.checkButtonState(station) ==
+                      StationStatus.canPause
+                  ? cubit.pause()
+                  : cubit.play(station),
             ),
           ],
         ),

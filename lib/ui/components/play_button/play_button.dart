@@ -1,24 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:radio_upp/config/brand_colors.dart';
+import 'package:radio_upp/logic/cubits/radio_cubit/current_station_cubit.dart';
 import 'package:radio_upp/ui/components/brand_icons/brand_icons.dart';
 
 class PlayButton extends StatelessWidget {
   const PlayButton({
     Key? key,
-    required this.isActive,
+    required this.status,
     required this.onTap,
   }) : super(key: key);
 
-  final bool isActive;
+  final StationStatus status;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    late IconData icon;
+    late Color iconsColor;
+    late Color backgroundColor;
+    var isGlowing = false;
+    switch (status) {
+      case StationStatus.canPlay:
+        icon = BrandIcons.play;
+        iconsColor = BrandColors.white;
+        backgroundColor = BrandColors.darkGreen;
+        isGlowing = true;
+        break;
+      case StationStatus.canPause:
+        icon = BrandIcons.pause;
+        backgroundColor = BrandColors.darkGreen.withOpacity(0.1);
+
+        iconsColor = BrandColors.darkGreen;
+        break;
+      case StationStatus.error:
+        icon = BrandIcons.close;
+        backgroundColor = BrandColors.red.withOpacity(0.1);
+
+        iconsColor = BrandColors.red;
+
+        break;
+    }
+
     return GestureDetector(
       onTap: onTap,
       child: Stack(
         children: [
-          if (!isActive)
+          if (isGlowing)
             Positioned(
               bottom: 1,
               child: Container(
@@ -39,15 +66,13 @@ class PlayButton extends StatelessWidget {
             height: 40,
             width: 40,
             decoration: BoxDecoration(
-              color: BrandColors.darkGreen.withOpacity(
-                isActive ? 0.1 : 1,
-              ),
+              color: backgroundColor,
               shape: BoxShape.circle,
             ),
             child: Icon(
-              isActive ? BrandIcons.pause : BrandIcons.play,
+              icon,
               size: 25,
-              color: isActive ? BrandColors.darkGreen : BrandColors.white,
+              color: iconsColor,
             ),
           ),
         ],

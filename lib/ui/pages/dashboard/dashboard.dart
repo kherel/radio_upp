@@ -142,13 +142,11 @@ class _DashboardState extends State<Dashboard> {
         begin: 0,
         end: 1,
       ).animate(animation),
-      // And slide transition
       child: SlideTransition(
         position: Tween<Offset>(
           begin: const Offset(0, -0.1),
           end: Offset.zero,
         ).animate(animation),
-        // Paste you Widget
         child: [
           const _Favorites(),
           const _GenresBlock(),
@@ -159,6 +157,4 @@ class _DashboardState extends State<Dashboard> {
       ),
     );
   }
-  // For example wrap with fade transition
-
 }
