@@ -29,9 +29,10 @@ class RadioApi extends RapidApi {
     );
     client.close();
 
-    print('res.data: ${res.data}');
+    if (res.data is List) {
+      return [];
+    }
     return (res.data['results'] as List).map<Station>((json) {
-      print(json);
       return Station.fromJson(json);
     }).toList();
   }

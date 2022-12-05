@@ -7,8 +7,9 @@ class _GenresBlock extends StatefulWidget {
   State<_GenresBlock> createState() => __GenresBlockState();
 }
 
-final firstList = Genre.values.take(98).toList();
-final secondList = Genre.values.skip(98).toList();
+final half = (Genre.values.length / 2).floor();
+final firstList = Genre.values.take(half).toList();
+final secondList = Genre.values.skip(half).toList();
 
 class __GenresBlockState extends State<_GenresBlock> {
   final topListController = InfiniteScrollController();
@@ -26,6 +27,8 @@ class __GenresBlockState extends State<_GenresBlock> {
 
   @override
   Widget build(BuildContext context) {
+    var cubit = context.watch<SearchCubit>();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -49,7 +52,7 @@ class __GenresBlockState extends State<_GenresBlock> {
               }
               return true;
             },
-            child: getListView(topListController, firstList),
+            child: getListView(topListController, firstList, cubit),
           ),
         ),
         const SizedBox(height: 10),
@@ -71,7 +74,7 @@ class __GenresBlockState extends State<_GenresBlock> {
               }
               return true;
             },
-            child: getListView(bottomListController, secondList),
+            child: getListView(bottomListController, secondList, cubit),
           ),
         ),
         const SizedBox(height: 30),
@@ -79,7 +82,16 @@ class __GenresBlockState extends State<_GenresBlock> {
     );
   }
 
-  Widget getListView(InfiniteScrollController controller, List<Genre> list) {
+  Widget getListView(
+    InfiniteScrollController controller,
+    List<Genre> list,
+    SearchCubit cubit,
+  ) {
+    var state = cubit.state;
+    Genre? loadingGenre;
+    if (state is StationsLoading) {
+      loadingGenre = state.genre;
+    }
     return InfiniteListView.separated(
       controller: controller,
       scrollDirection: Axis.horizontal,
@@ -89,6 +101,7 @@ class __GenresBlockState extends State<_GenresBlock> {
         return _GenreCard(
           key: ValueKey(genre.id),
           genre: genre,
+          isLoading: loadingGenre == genre,
         );
       },
     );
@@ -102,71 +115,84 @@ enum ScrollingList {
 }
 
 class _GenreCard extends StatelessWidget {
-  const _GenreCard({Key? key, required this.genre}) : super(key: key);
+  const _GenreCard({
+    Key? key,
+    required this.genre,
+    required this.isLoading,
+  }) : super(key: key);
 
   final Genre genre;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 140,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: Colors.white30,
-        image: DecorationImage(
-          colorFilter: const ColorFilter.mode(
-            Colors.black12,
-            BlendMode.darken,
+    return GestureDetector(
+      onTap: () => context.read<SearchCubit>().search(genre: genre),
+      child: Container(
+        width: 140,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Colors.white30,
+          image: DecorationImage(
+            colorFilter: const ColorFilter.mode(
+              Colors.black12,
+              BlendMode.darken,
+            ),
+            image: AssetImage(
+              'assets/images/genres/${genre.fileName}.webp',
+            ),
+            fit: BoxFit.cover,
           ),
-          image: AssetImage(
-            'assets/images/genres/${genre.fileName}.webp',
-          ),
-          fit: BoxFit.cover,
         ),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [
-                      BrandColors.secondaryBlack,
-                      BrandColors.secondaryBlack.withOpacity(0)
-                    ],
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [
+                        BrandColors.secondaryBlack,
+                        BrandColors.secondaryBlack.withOpacity(0)
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            Positioned.fill(
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: const Alignment(0.5, 0.5),
-                    end: const Alignment(1.8, -1.8),
-                    colors: [
-                      BrandColors.darkGreen.withOpacity(0),
-                      BrandColors.darkGreen.withOpacity(0.4)
-                    ],
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: const Alignment(0.5, 0.5),
+                      end: const Alignment(1.8, -1.8),
+                      colors: [
+                        BrandColors.darkGreen.withOpacity(0),
+                        BrandColors.darkGreen.withOpacity(0.4)
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(8),
-              alignment: const Alignment(0, 0.8),
-              child: Text(
-                genre.name.toUpperCase(),
-                textAlign: TextAlign.center,
-                style: ThemeTypo.small,
-                maxLines: 2,
+              Container(
+                padding: const EdgeInsets.all(8),
+                alignment: const Alignment(0, 0.8),
+                child: Text(
+                  genre.name.toUpperCase(),
+                  textAlign: TextAlign.center,
+                  style: ThemeTypo.small,
+                  maxLines: 2,
+                ),
               ),
-            ),
-          ],
+              if (isLoading)
+                const Align(
+                  alignment: Alignment.center,
+                  child: BrandLoader(),
+                ),
+            ],
+          ),
         ),
       ),
     );

@@ -9,12 +9,26 @@ abstract class SearchState extends Equatable {
 
 class StationsInitial extends SearchState {}
 
-class StationsLoading extends SearchState {}
+class StationsLoading extends SearchState {
+  const StationsLoading({
+    this.genre,
+    this.country,
+  }) : assert(genre != null || country != null);
+
+  final Genre? genre;
+  final Country? country;
+}
 
 class StationsLoaded extends SearchState {
   final List<Station> stations;
+  final Genre? genre;
+  final Country? country;
 
-  const StationsLoaded(this.stations);
+  const StationsLoaded({
+    this.genre,
+    this.country,
+    required this.stations,
+  }) : assert(genre != null || country != null);
 
   @override
   List<Object> get props => stations;

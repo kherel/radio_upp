@@ -7,14 +7,19 @@ import 'package:radio_upp/logic/models/station.dart';
 
 part 'search_state.dart';
 
-class Search extends Cubit<SearchState> {
-  Search() : super(StationsInitial());
+class SearchCubit extends Cubit<SearchState> {
+  SearchCubit() : super(StationsInitial());
 
   var api = RadioApi();
 
   void search({Genre? genre, Country? country}) async {
-    emit(StationsLoading());
+    emit(StationsLoading(genre: genre, country: country));
+
     var res = await api.search(country: country, genre: genre);
-    emit(StationsLoaded(res));
+    emit(StationsLoaded(
+      stations: res,
+      genre: genre,
+      country: country,
+    ));
   }
 }

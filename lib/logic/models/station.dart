@@ -18,9 +18,13 @@ class Station extends Equatable {
     fromJson: Serialization.genreFromString,
     toJson: Serialization.stringIdFromGenre,
   )
-  final Genre genre;
-  @JsonKey(name: 'c')
-  final Country country;
+  final Genre? genre;
+  @JsonKey(
+    name: 'c',
+    fromJson: Serialization.countryFromString,
+    toJson: Serialization.stringIdFromCountry,
+  )
+  final Country? country;
   @JsonKey(name: 'l')
   final String logoUrl;
   @JsonKey(name: 'u')

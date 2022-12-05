@@ -9,6 +9,7 @@ import 'package:infinite_listview/infinite_listview.dart';
 import 'package:radio_upp/config/brand_colors.dart';
 import 'package:radio_upp/config/theme_typo.dart';
 import 'package:radio_upp/logic/cubits/local_stations/local_stations_cubit.dart';
+import 'package:radio_upp/logic/cubits/search/search_cubit.dart';
 import 'package:radio_upp/logic/models/country.dart';
 import 'package:radio_upp/logic/models/genre.dart';
 import 'package:radio_upp/logic/models/station.dart';
@@ -16,6 +17,7 @@ import 'package:radio_upp/ui/components/brand_loader/brand_loader.dart';
 import 'package:radio_upp/ui/components/brand_titles/brand_titles.dart';
 import 'package:radio_upp/ui/components/genre_label/genre_label.dart';
 import 'package:radio_upp/ui/components/header/header.dart';
+import 'package:radio_upp/ui/components/side_modal/side_modal.dart';
 
 part 'genres.dart';
 part 'local.dart';
@@ -52,25 +54,36 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    var isEmpty = true;
-    return Scaffold(
-      body: CustomScrollView(
-        controller: scrollController,
-        slivers: [
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: Header(MediaQuery.of(context)),
-          ),
-          LiveSliverList(
-            visibleFraction: .1,
-            controller: scrollController,
-            showItemDuration: animationDuration,
-            showItemInterval: animationDuration,
-            itemCount: 5,
-            itemBuilder: buildAnimatedItem,
-          ),
-          _bouldCountryList()
-        ],
+    return BlocListener<SearchCubit, SearchState>(
+      listener: (context, state) {
+        if (state is StationsLoaded) {
+          if (state.stations.isEmpty) {
+            print(state.genre);
+            print(state.country);
+          } else {
+            BrandModal.openModal(state.stations);
+          }
+        }
+      },
+      child: Scaffold(
+        body: CustomScrollView(
+          controller: scrollController,
+          slivers: [
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: Header(MediaQuery.of(context)),
+            ),
+            LiveSliverList(
+              visibleFraction: .1,
+              controller: scrollController,
+              showItemDuration: animationDuration,
+              showItemInterval: animationDuration,
+              itemCount: 5,
+              itemBuilder: buildAnimatedItem,
+            ),
+            _bouldCountryList()
+          ],
+        ),
       ),
     );
   }

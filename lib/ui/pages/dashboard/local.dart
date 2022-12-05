@@ -12,7 +12,8 @@ class _Local extends StatelessWidget {
       const SizedBox(height: 24),
     ];
     if (localStations is! LocalStationsLoaded) {
-      children.add(const Expanded(
+      children.add(const SizedBox(
+        height: 120,
         child: Text('loading'),
       ));
     } else {
@@ -111,7 +112,8 @@ class _LocalStationCard extends StatelessWidget {
                       maxLines: 2,
                     ),
                     const SizedBox(height: 10),
-                    GenreLabel(genre: station.genre),
+                    if (station.genre != null)
+                      GenreLabel(genre: station.genre!),
                   ],
                 ),
               )
