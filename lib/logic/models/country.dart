@@ -131,7 +131,7 @@ enum Country {
   US,
   // UY,
   // VC,
-  VE,
+  // VE,
   // VN,
   // ZA,
   // ZW,
@@ -400,8 +400,8 @@ extension CountriesExt on Country {
       //   return "Uruguay";
       // case Country.VC:
       //   return "Saint Vincent and the Grenadines";
-      case Country.VE:
-        return "Venezuela";
+      // case Country.VE:
+      //   return "Venezuela";
       // case Country.VN:
       //   return "Vietnam";
       // case Country.ZA:

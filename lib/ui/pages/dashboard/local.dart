@@ -12,13 +12,14 @@ class _Local extends StatelessWidget {
       const SizedBox(height: 24),
     ];
     if (localStations is! LocalStationsLoaded) {
-      children.add(const SizedBox(
-        height: 120,
-        child: Text('loading'),
+      children.add(Container(
+        height: 130,
+        alignment: Alignment.center,
+        child: const BrandLoader(),
       ));
     } else {
       children.add(SizedBox(
-        height: 120,
+        height: 130,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
@@ -70,56 +71,71 @@ class _LocalStationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 300,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 20,
-      ),
-      decoration: BoxDecoration(
-        color: BrandColors.darkBlue.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(30),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(21),
-                child: CachedNetworkImage(
-                  width: 80,
-                  height: 80,
-                  fit: BoxFit.cover,
-                  imageUrl:
-                      'https://www.radioair.info/images_radios/${station.logoUrl}',
-                  placeholder: (context, url) => const BrandLoader(),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
+    Station? playingStation;
+    var radioCubit = context.watch<RadioCubit>();
+    var radioState = radioCubit.state;
+    if (radioState is RadioCubitStateWithStation) {
+      playingStation = radioState.station;
+    }
+    return GestureDetector(
+      onTap: () {
+        radioCubit.play(station);
+      },
+      child: Container(
+        width: 300,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 20,
+        ),
+        decoration: BoxDecoration(
+          color: BrandColors.darkBlue.withOpacity(0.2),
+          border: playingStation == station
+              ? Border.all(color: BrandColors.darkGreen)
+              : null,
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(21),
+                  child: CachedNetworkImage(
+                    width: 80,
+                    height: 80,
+                    fit: BoxFit.cover,
+                    imageUrl:
+                        'https://www.radioair.info/images_radios/${station.logoUrl}',
+                    placeholder: (context, url) => const BrandLoader(),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 20),
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AutoSizeText(
-                      station.name,
-                      style: ThemeTypo.basis,
-                      maxLines: 2,
-                    ),
-                    const SizedBox(height: 10),
-                    if (station.genre != null)
-                      GenreLabel(genre: station.genre!),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ],
+                const SizedBox(width: 20),
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AutoSizeText(
+                        station.name,
+                        style: ThemeTypo.basis,
+                        maxLines: 2,
+                      ),
+                      const SizedBox(height: 10),
+                      if (station.genre != null)
+                        GenreLabel(genre: station.genre!),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -33,30 +33,32 @@ class _PlayerState extends State<Player> {
         children: [
           RadioAvatar.s50(state.station.logoUrl),
           const SizedBox(width: 15),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 8),
-              Text(
-                state.station.name,
-                style: ThemeTypo.small,
-                textAlign: TextAlign.center,
-              ),
-              Container(
-                height: 30,
-                alignment: Alignment.center,
-                child: _AnimatedDetails(
-                  children: [
-                    Text(
-                      state.station.country?.title ?? '',
-                      style: ThemeTypo.superSmall,
-                    ),
-                    if (state.station.genre != null)
-                      GenreLabel(genre: state.station.genre!)
-                  ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 8),
+                Text(
+                  state.station.name,
+                  style: ThemeTypo.small,
+                  textAlign: TextAlign.center,
                 ),
-              ),
-            ],
+                Container(
+                  height: 30,
+                  alignment: Alignment.center,
+                  child: _AnimatedDetails(
+                    children: [
+                      Text(
+                        state.station.country?.title ?? '',
+                        style: ThemeTypo.superSmall,
+                      ),
+                      if (state.station.genre != null)
+                        GenreLabel(genre: state.station.genre!)
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
           const SizedBox(
             width: 20,

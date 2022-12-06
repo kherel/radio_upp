@@ -9,6 +9,7 @@ import 'package:infinite_listview/infinite_listview.dart';
 import 'package:radio_upp/config/brand_colors.dart';
 import 'package:radio_upp/config/theme_typo.dart';
 import 'package:radio_upp/logic/cubits/local_stations/local_stations_cubit.dart';
+import 'package:radio_upp/logic/cubits/radio_cubit/current_station_cubit.dart';
 import 'package:radio_upp/logic/cubits/search/search_cubit.dart';
 import 'package:radio_upp/logic/models/country.dart';
 import 'package:radio_upp/logic/models/genre.dart';
@@ -58,11 +59,18 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     var cubit = context.watch<SearchCubit>();
 
+    Station? playingStation;
+    var radioState = context.watch<RadioCubit>().state;
+    var isPlayerHidden = radioState is RadioCubitStopped;
+
+    if (radioState is RadioCubitStateWithStation) {
+      playingStation = radioState.station;
+    }
+
     return BlocListener<SearchCubit, SearchState>(
       listener: (context, state) {
         if (state is StationsLoaded) {
           var title = state.genre?.name ?? state.country?.title;
-
           BrandModal.openModal(
             state.stations,
             title: title!,
@@ -87,14 +95,16 @@ class _DashboardState extends State<Dashboard> {
               itemCount: 5,
               itemBuilder: buildAnimatedItem,
             ),
-            _bouldCountryList(cubit)
+            _bouldCountryList(cubit, playingStation),
+            if (!isPlayerHidden)
+              const SliverToBoxAdapter(child: SizedBox(height: 100)),
           ],
         ),
       ),
     );
   }
 
-  SliverList _bouldCountryList(SearchCubit cubit) {
+  SliverList _bouldCountryList(SearchCubit cubit, Station? playingStation) {
     var state = cubit.state;
 
     return SliverList(
@@ -102,9 +112,11 @@ class _DashboardState extends State<Dashboard> {
         [
           ...Country.values.map((c) {
             var isLoading = state is StationsLoading && state.country == c;
+            var isPlaying = c == playingStation?.country;
             var child = Text(
               c.title,
-              style: ThemeTypo.h2,
+              style: ThemeTypo.h2
+                  .copyWith(color: isPlaying ? BrandColors.darkGreen : null),
             );
             return GestureDetector(
               onTap: () {

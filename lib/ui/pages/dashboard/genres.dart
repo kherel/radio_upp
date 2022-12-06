@@ -28,7 +28,11 @@ class __GenresBlockState extends State<_GenresBlock> {
   @override
   Widget build(BuildContext context) {
     var cubit = context.watch<SearchCubit>();
-
+    Station? playingStation;
+    var radioState = context.watch<RadioCubit>().state;
+    if (radioState is RadioCubitStateWithStation) {
+      playingStation = radioState.station;
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -52,7 +56,8 @@ class __GenresBlockState extends State<_GenresBlock> {
               }
               return true;
             },
-            child: getListView(topListController, firstList, cubit),
+            child: getListView(
+                topListController, firstList, cubit, playingStation),
           ),
         ),
         const SizedBox(height: 10),
@@ -74,7 +79,8 @@ class __GenresBlockState extends State<_GenresBlock> {
               }
               return true;
             },
-            child: getListView(bottomListController, secondList, cubit),
+            child: getListView(
+                bottomListController, secondList, cubit, playingStation),
           ),
         ),
         const SizedBox(height: 30),
@@ -86,6 +92,7 @@ class __GenresBlockState extends State<_GenresBlock> {
     InfiniteScrollController controller,
     List<Genre> list,
     SearchCubit cubit,
+    Station? playingStation,
   ) {
     var state = cubit.state;
     Genre? loadingGenre;
@@ -102,6 +109,7 @@ class __GenresBlockState extends State<_GenresBlock> {
           key: ValueKey(genre.id),
           genre: genre,
           isLoading: loadingGenre == genre,
+          isPlaying: playingStation?.genre == genre,
         );
       },
     );
@@ -119,10 +127,13 @@ class _GenreCard extends StatelessWidget {
     Key? key,
     required this.genre,
     required this.isLoading,
+    required this.isPlaying,
   }) : super(key: key);
 
   final Genre genre;
   final bool isLoading;
+
+  final bool isPlaying;
 
   @override
   Widget build(BuildContext context) {
@@ -133,6 +144,7 @@ class _GenreCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           color: Colors.white30,
+          border: isPlaying ? Border.all(color: BrandColors.darkGreen) : null,
           image: DecorationImage(
             colorFilter: const ColorFilter.mode(
               Colors.black12,
