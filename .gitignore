@@ -1,7 +1,5 @@
 .env
 
-/assets/fonts/bossa
-/assets/fonts/gilroy
 
 # Miscellaneous
 *.class
